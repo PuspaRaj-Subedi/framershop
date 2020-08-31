@@ -20,18 +20,29 @@ Route::get('/',function()
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login','AuthController@login');
     Route::post('register','AuthController@register');
-    
+
     Route::group(['middleware'=>'auth:api'], function () {
         Route::get('logout','AuthController@logout');
         Route::get('user','AuthController@user');
     });
 });
-Route::group([       
-    'middleware' => 'api',    
+Route::group([
+    'middleware' => 'api',
     'prefix' => 'password'
-], function () {    
+], function () {
     Route::post('create', 'PasswordResetController@create');
     Route::get('find/{token}', 'PasswordResetController@find');
     Route::post('reset', 'PasswordResetController@reset');
 });
 
+Route::middleware('can:isAdmin')->group(function ()
+{
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'product'
+], function () {
+Route::post('store','API\ProductController@store');
+Route::delete('delete/{id}','API\ProductController@delete');
+});
+});
+Route::get('home','API\ProductController@index');

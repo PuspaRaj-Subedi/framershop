@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\Passport\Token;
@@ -51,14 +52,31 @@ class AuthController extends Controller
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addWeeks(1);
         $token->save();
-        return response()->json([
-            'user'=> Auth::user(),
-            'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-            $tokenResult->token->expires_at
-            )->toDateTimeString()
-        ]);
+        if (Gate::allows('isAdmin'))
+        {
+            return response()->json([
+                'message'=>'Admin login successfully',
+                'user'=> Auth::user(),
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ]);
+        }
+        elseif (Gate::allows('isUser'))
+        {
+            return response()->json([
+                'message'=>'User login successfully',
+                'user'=> Auth::user(),
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ]);
+        }
+
 
     }
     public function logout(Request $request)
@@ -68,6 +86,10 @@ class AuthController extends Controller
     }
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json(
+            [
+            'data'=>$request->user(),
+            'token'=>$request->user()->token()->accessToken
+            ]);
     }
 }
