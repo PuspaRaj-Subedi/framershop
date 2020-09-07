@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('phone')->unique();
             $table->tinyInteger('role')->default(3);
             $table->string('profile')->nullable();
+            $table->bigInteger('address_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

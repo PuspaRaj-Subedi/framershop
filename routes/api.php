@@ -24,6 +24,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware'=>'auth:api'], function () {
         Route::get('logout','AuthController@logout');
         Route::get('user','AuthController@user');
+
     });
 });
 Route::group([
@@ -42,7 +43,17 @@ Route::group([
     'prefix' => 'product'
 ], function () {
 Route::post('store','API\ProductController@store');
+Route::get('contact','API\ContactController@index');
+Route::get('nearby','API\NearbyController@index');
 Route::delete('delete/{id}','API\ProductController@delete');
 });
 });
 Route::get('home','API\ProductController@index');
+
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'contact'
+], function () {
+Route::post('store','API\ContactController@store');
+});
+

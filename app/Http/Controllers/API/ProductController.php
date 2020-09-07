@@ -22,12 +22,14 @@ class ProductController extends Controller
             "message"=>'Display All Products',
         ]);
     }
+
     public function store(Request $request)
     {
         $products = new Product();
         $request->validate([
             'product_name'=>'required|string|',
             'description'=>'required|string|',
+            'price'=>'required|integer',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         if ($request->hasFile('image')) {
@@ -35,6 +37,7 @@ class ProductController extends Controller
             request()->image->move(public_path('products'), $imageName);
             $products->product_url=$imageName;
             $products->product_name = $request->product_name;
+            $products->Price=$request->price;
             $products->description= $request->description;
             $products->user_id= Auth::user()->id;
             $title= $request->product_name;
@@ -47,6 +50,7 @@ class ProductController extends Controller
                 "file" => $imageName
             ]);
             }
+
     }
     public function delete($product_id)
     {

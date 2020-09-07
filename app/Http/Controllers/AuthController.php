@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\Passport\Token;
 use App\User;
+use App\Address;
 
 class AuthController extends Controller
 {
@@ -22,16 +23,26 @@ class AuthController extends Controller
             'phone'=>'required|unique:users|min:10',
             'password'=>'required|string|min:6'
         ]);
-        $users = new User([
-            'first_name'=> $request->first_name,
-            'last_name'=> $request->last_name,
-            'email'=>$request->email,
-            'phone'=>$request->phone,
-            'password'=> Hash::make($request->password)
-        ]);
-        $users->save();
+        $address = new Address;
+        $address->address = $request->address;
+        $address->latitude = $request->latitude;
+        $address->longitude = $request->longitude;
+        if($address->save())
+        {
+            $InsertedId = $address->id;
+            $users = new User();
+            $users->first_name = $request->first_name;
+            $users->last_name = $request->last_name;
+            $users->email = $request->email;
+            $users->address_id = $InsertedId;
+            $users->phone = $request->phone;
+            $users->password =  Hash::make($request->password);
+         $users->save();
         return response()->json(['message'=>"User Registered Successfully"],200);
-
+        }
+        else{
+            return response()->json('error');
+        }
     }
     public function login(Request $request)
     {
@@ -89,7 +100,7 @@ class AuthController extends Controller
         return response()->json(
             [
             'data'=>$request->user(),
-            'token'=>$request->user()->token()->accessToken
+            'token'=>$request->user()->token()
             ]);
     }
 }
