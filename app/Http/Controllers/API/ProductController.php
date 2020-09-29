@@ -4,23 +4,35 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Product;
 use Illuminate\Support\Str;
-use app\User;
 
 
 
 class ProductController extends Controller
 {
-    public function index()
+    public $successStatus = 200;
+
+    public function index($option)
     {
-        $products= Product::All();
-        return response()->json([
-            "data"=> $products,
-            "message"=>'Display All Products',
-        ]);
+
+        switch ($option) {
+            case 'all':
+                $products = Product::get();
+                break;
+            default:
+                $products = null;
+        }
+        return response()->json(['data' => $products], $this->successStatus);
+    }
+
+    public function details($id)
+    {
+        $orderdetails = Product::where('id', $id)
+            ->get();
+        return response()->json(['data' => $orderdetails], $this->successStatus);
+
     }
 
     public function store(Request $request)
@@ -39,23 +51,22 @@ class ProductController extends Controller
             $products->product_name = $request->product_name;
             $products->Price=$request->price;
             $products->description= $request->description;
-            $products->user_id= Auth::user()->id;
-            $title= $request->product_name;
-            $title = str::slug($title, "-");
-            $products->slug= $title;
-            $products->save();
-            return response()->json([
-                "success" => true,
-                "message" => "Product successfully uploaded",
-                "file" => $imageName
-            ]);
-            }
+            $products->user_id= Auth::id();
+            $products->slug= str::slug($request->product_name, "-");
+            if($products->save())
+                return response()->json($this->successStatus);
+            else
+                return response()->json(['error' => 'Unauthorised'], 401);
+        }
+        else
+            return response()->json(['error' => 'Unauthorised'], 401);
+
 
     }
     public function delete($product_id)
     {
         $products = Product::findOrFail($product_id);
         $products->delete();
-        return response()->json('Product Deleted Succesfully');
+        return response()->json($this->successStatus);
     }
 }

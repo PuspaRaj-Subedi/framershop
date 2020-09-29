@@ -13,20 +13,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/',function()
-{
-    return response()->json("Welcome to laravel api");
-});
-Route::group(['prefix' => 'auth'], function () {
-    Route::post('login','AuthController@login');
+Route::prefix('customer')->group(function () {
+
+    Route::post('login', 'AuthController@login');
     Route::post('register','AuthController@register');
-
-    Route::group(['middleware'=>'auth:api'], function () {
-        Route::get('logout','AuthController@logout');
-        Route::get('user','AuthController@user');
-
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('product/{options}', 'API\ProductController@index');
+        Route::post('product/details/{id}', 'API\ProductController@details');
     });
 });
+
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'password'
