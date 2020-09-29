@@ -45,8 +45,22 @@ class ContactController extends Controller
             ]
         );
     }
-    public function update($id)
+    public function update($id, Request $request)
     {
+    $contact = Contact::findOrFail($id);
+
+    $this->validate($request, [
+        'city'=>'required|string',
+        'state'=>'required|string',
+        'zipcode'=>'required|integer|min:5',
+        'weight'=>'required|integer'
+    ]);
+
+    $input = $request->all();
+
+    $contact->fill($input)->save();
+
+    return redirect()->json("Updated Successfully");
 
     }
 }

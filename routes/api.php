@@ -44,7 +44,6 @@ Route::group([
 ], function () {
 Route::post('store','API\ProductController@store');
 Route::get('contact','API\ContactController@index');
-Route::get('nearby','API\NearbyController@index');
 Route::delete('delete/{id}','API\ProductController@delete');
 });
 });
@@ -54,6 +53,7 @@ Route::group([
     'middleware' => 'auth:api',
     'prefix' => 'contact'
 ], function () {
+Route::get('nearby','API\NearbyController@index');
 Route::post('store','API\ContactController@store');
 });
 

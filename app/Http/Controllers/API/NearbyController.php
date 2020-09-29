@@ -13,10 +13,20 @@ class NearbyController extends Controller
 {
     public function index() {
 
-        $id = Auth::user()->address_id;
-        $lat     = Address::where('id', $id)->get();
-        $long   =  Address::where('id', $id)->get();
-        $location=User::whereRaw(ACOS(SIN(deg2rad('latitude'))*SIN(deg2rad($lat))+COS(deg2rad('latitude'))*COS(deg2rad($lat))*COS(deg2rad('longitude')-deg2rad($long)))*6380 < 10);
-       return response()->json($location);
+        $user = User::with('Address')->get();
+        dd($user);
+        $lat = Auth::User()->Address->latitude;
+        $long= Auth::User()->Address->longitude;
+
+        $location = User::with('Address')
+        ->whereRaw('6371 * acos( cos( radians(28.2096) ) * cos( radians( Address->latitude ) ) * cos( radians( longitude ) - radians(83.4596) ) + sin( radians(28.2096) ) * sin( radians( Address->latitude ) ) ) )  <5')
+        ->get();
+
+       return response()->json([
+           'user as login'=>$location,
+           'user' => $user,
+           'latitude'=>$lat,
+           'longitude'=>$long
+           ]);
     }
 }
