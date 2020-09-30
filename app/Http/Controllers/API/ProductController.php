@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Product;
 use Illuminate\Support\Str;
-
 
 
 class ProductController extends Controller
@@ -16,10 +16,15 @@ class ProductController extends Controller
 
     public function index($option)
     {
-
         switch ($option) {
             case 'all':
                 $products = Product::get();
+                break;
+                case 'my_order':
+                $products = Order::where('receiver_id', Auth::id())->get();
+                break;
+                case 'my_product':
+                $products = Product::where('user_id', Auth::id())->get();
                 break;
             default:
                 $products = null;
@@ -39,30 +44,24 @@ class ProductController extends Controller
     {
         $products = new Product();
         $request->validate([
-            'product_name'=>'required|string|',
-            'description'=>'required|string|',
-            'price'=>'required|integer',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'product_name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
         ]);
-        if ($request->hasFile('image')) {
-            $imageName = time().'.'.request()->image->getClientOriginalExtension();
-            request()->image->move(public_path('products'), $imageName);
-            $products->product_url=$imageName;
-            $products->product_name = $request->product_name;
-            $products->Price=$request->price;
-            $products->description= $request->description;
-            $products->user_id= Auth::id();
-            $products->slug= str::slug($request->product_name, "-");
-            if($products->save())
-                return response()->json($this->successStatus);
-            else
-                return response()->json(['error' => 'Unauthorised'], 401);
-        }
+
+        $products->product_url = 'https://www.irishtimes.com/polopoly_fs/1.3594671.1534163385!/image/image.jpg_gen/derivatives/box_620_330/image.jpg';
+        $products->product_name = $request->product_name;
+        $products->Price = $request->Price;
+        $products->description = $request->description;
+        $products->user_id = Auth::id();
+        $products->slug = str::slug($request->product_name, "-");
+        if ($products->save())
+            return response()->json(['data' => 'success'], $this->successStatus);
         else
             return response()->json(['error' => 'Unauthorised'], 401);
 
-
     }
+
     public function delete($product_id)
     {
         $products = Product::findOrFail($product_id);

@@ -18,9 +18,9 @@ class AuthController extends Controller
         request()->validate([
             'first_name'=> 'required|string',
             'last_name'=>'required|string',
-            'email'=>'required|string|unique:users',
-            'phone'=>'required|unique:users|min:10',
-            'password'=>'required|string|min:6'
+            'email'=>'required',
+            'phone'=>'required',
+            'password'=>'required|string'
         ]);
         $users = new User([
             'first_name'=> request('first_name'),
@@ -56,8 +56,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
-
-
 
     public function logout(Request $request)
     {
