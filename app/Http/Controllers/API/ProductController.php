@@ -42,6 +42,13 @@ class ProductController extends Controller
 
     public function store()
     {
+
+        request()->validate([
+            'product_name'=> 'required|string',
+            'Price'=>'required',
+            'description'=>'required',
+        ]);
+
         $products = new Product([
             'product_name' => request('product_name'),
             'Price' => request('Price'),
@@ -50,7 +57,7 @@ class ProductController extends Controller
         ]);
 
         if ($products->save())
-            return response()->json(['data' => 'success'], $this->successStatus);
+            return "response()->json(['data' => 'success'], $this->successStatus)";
         else
             return response()->json(['error' => 'Unauthorised'], 401);
 
