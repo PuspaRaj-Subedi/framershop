@@ -20,6 +20,8 @@ Route::prefix('customer')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('product/{options}', 'API\ProductController@index');
         Route::post('product/details/{id}', 'API\ProductController@details');
+        Route::post('store','API\ProductController@store');
+Route::delete('delete/{id}','API\ProductController@delete');
     });
 });
 
@@ -33,8 +35,7 @@ Route::group([
     Route::post('reset', 'PasswordResetController@reset');
 });
 
-Route::middleware('can:isAdmin')->group(function ()
-{
+
 Route::group([
     'middleware' => 'auth:api',
     'prefix' => 'product'
@@ -42,7 +43,6 @@ Route::group([
 Route::post('store','API\ProductController@store');
 Route::get('contact','API\ContactController@index');
 Route::delete('delete/{id}','API\ProductController@delete');
-});
 });
 Route::get('home','API\ProductController@index');
 
