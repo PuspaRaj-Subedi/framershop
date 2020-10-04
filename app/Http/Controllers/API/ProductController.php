@@ -57,7 +57,7 @@ class ProductController extends Controller
         ]);
 
         if ($products->save())
-            return "response()->json(['data' => 'success'], $this->successStatus)";
+            return response()->json(['data' => 'success'], $this->successStatus);
         else
             return response()->json(['error' => 'Unauthorised'], 401);
 
