@@ -22,6 +22,7 @@ class AuthController extends Controller
             'phone'=>'required',
             'password'=>'required|string'
         ]);
+
         $users = new User([
             'first_name'=> request('first_name'),
             'last_name'=> request('last_name'),
@@ -30,16 +31,11 @@ class AuthController extends Controller
             'password'=> Hash::make(request('password')),
             'address_id'=> 1
         ]);
+
         if($users->save())
-        {
-            return response()->json(['data' => ' '], $this->successStatus);
-
-        }
+            return response()->json(['data' => 'success'], $this->successStatus);
         else
-        {
             return response()->json(['error' => 'Unauthorised'], 401);
-
-        }
 
     }
     public function login()
