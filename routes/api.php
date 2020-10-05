@@ -17,7 +17,13 @@ Route::prefix('customer')->group(function () {
 
     Route::post('login', 'AuthController@login');
     Route::post('register','AuthController@register');
-
+   //mero controller bata hunxa
+    Route::group([
+        'middleware' => 'auth:api',
+        'prefix' => 'product'
+    ], function () {
+    Route::post('store','API\ProductController@store');
+    });
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('product/{options}', 'API\ProductController@index');
         Route::post('product/details/{id}', 'API\ProductController@details');
