@@ -17,23 +17,27 @@ Route::prefix('customer')->group(function () {
 
     Route::post('login', 'AuthController@login');
     Route::post('register','AuthController@register');
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('product/{options}', 'API\ProductController@index');
         Route::post('product/details/{id}', 'API\ProductController@details');
-        Route::post('store','API\ProductController@store');
-Route::delete('delete/{id}','API\ProductController@delete');
+        Route::post('product/add', 'API\ProductController@store');
+        Route::get('product/order', 'API\ProductController@order');
+        Route::get('product/my_order', 'API\ProductController@my_order');
+        Route::post('product/place_order', 'API\ProductController@place_order');
+        Route::delete('product/delete', 'API\ProductController@destroy');
     });
 });
 
 
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'password'
-], function () {
-    Route::post('create', 'PasswordResetController@create');
-    Route::get('find/{token}', 'PasswordResetController@find');
-    Route::post('reset', 'PasswordResetController@reset');
-});
+// Route::group([
+//     'middleware' => 'api',
+//     'prefix' => 'password'
+// ], function () {
+//     Route::post('create', 'PasswordResetController@create');
+//     Route::get('find/{token}', 'PasswordResetController@find');
+//     Route::post('reset', 'PasswordResetController@reset');
+// });
 
 
 Route::group([
@@ -41,16 +45,14 @@ Route::group([
     'prefix' => 'product'
 ], function () {
 Route::post('store','API\ProductController@store');
-Route::get('contact','API\ContactController@index');
-Route::delete('delete/{id}','API\ProductController@delete');
 });
-Route::get('home','API\ProductController@index');
+// Route::get('home','API\ProductController@index');
 
-Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'contact'
-], function () {
-Route::get('nearby','API\NearbyController@index');
-Route::post('store','API\ContactController@store');
-});
+// Route::group([
+//     'middleware' => 'auth:api',
+//     'prefix' => 'contact'
+// ], function () {
+// Route::get('nearby','API\NearbyController@index');
+// Route::post('store','API\ContactController@store');
+// });
 

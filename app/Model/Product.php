@@ -9,6 +9,12 @@ use App\Model\Feedback;
 
 class Product extends Model
 {
+
+
+    protected $fillable = [
+        'product_name','price', 'description','user_id'
+    ];
+
     public function User()
     {
         return $this->belongsTo(User::class);

@@ -18,10 +18,11 @@ class AuthController extends Controller
         request()->validate([
             'first_name'=> 'required|string',
             'last_name'=>'required|string',
-            'email'=>'required|string|unique:users',
-            'phone'=>'required|unique:users|min:10',
-            'password'=>'required|string|min:6'
+            'email'=>'required',
+            'phone'=>'required',
+            'password'=>'required|string'
         ]);
+
         $users = new User([
             'first_name'=> request('first_name'),
             'last_name'=> request('last_name'),
@@ -30,16 +31,11 @@ class AuthController extends Controller
             'password'=> Hash::make(request('password')),
             'address_id'=> 1
         ]);
+
         if($users->save())
-        {
-            return response()->json(['data' => ' '], $this->successStatus);
-
-        }
+            return response()->json(['data' => 'success'], $this->successStatus);
         else
-        {
             return response()->json(['error' => 'Unauthorised'], 401);
-
-        }
 
     }
     public function login()
@@ -56,8 +52,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
-
-
 
     public function logout(Request $request)
     {
