@@ -27,7 +27,7 @@ Route::prefix('customer')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('product/{options}', 'API\ProductController@index');
         Route::post('product/details/{id}', 'API\ProductController@details');
-        Route::post('product/add', 'API\ProductController@store');
+        Route::post('add', 'API\ProductController@store');
         Route::get('product/order', 'API\ProductController@order');
         Route::get('product/my_order', 'API\ProductController@my_order');
         Route::post('product/place_order', 'API\ProductController@place_order');

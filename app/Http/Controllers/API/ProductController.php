@@ -7,7 +7,6 @@ use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Product;
-use App\Media;
 use Illuminate\Support\Str;
 
 
