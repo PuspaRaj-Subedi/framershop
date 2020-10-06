@@ -46,12 +46,6 @@ Route::prefix('customer')->group(function () {
 // });
 
 
-Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'product'
-], function () {
-Route::post('store','API\ProductController@store');
-});
 // Route::get('home','API\ProductController@index');
 
 // Route::group([

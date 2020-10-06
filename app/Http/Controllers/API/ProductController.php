@@ -21,10 +21,10 @@ class ProductController extends Controller
             case 'all':
                 $products = Product::get();
                 break;
-                case 'my_order':
+            case 'my_order':
                 $products = Order::where('receiver_id', Auth::id())->get();
                 break;
-                case 'my_product':
+            case 'my_product':
                 $products = Product::where('user_id', Auth::id())->get();
                 break;
             default:
@@ -46,36 +46,30 @@ class ProductController extends Controller
         $products = new Product();
         $medias = new Media();
         $request->validate([
-            'product_name'=> 'required|string',
-            'price'=>'required',
-            'description'=>'required',
+            'product_name' => 'required|string',
+            'price' => 'required',
+            'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         if ($request->hasFile('image')) {
             $title = $request->product_name;
-            $imageName = $title.time().'.'.request()->image->getClientOriginalExtension();
+            $imageName = $title . time() . '.' . request()->image->getClientOriginalExtension();
             request()->image->move(public_path('products'), $imageName);
-            $medias->product_url = $imageName;
-            $medias->save();
-            $products->product_id=$medias->id;
-            $products->Price= $request->price;
+//            $medias->product_url = $imageName;
+//            $medias->save();
+            $products->product_id = $medias->id;
+            $products->Price = $request->price;
             $products->user_id = Auth::user()->id;
-            $products->description= $request->description;
+            $products->description = $request->description;
             $products->product_name = $request->product_name;
-            $products->slug= str::slug($request->product_name, "-");
+            $products->slug = str::slug($request->product_name, "-");
             if ($products->save())
-            return response()->json(['data' => 'success'], $this->successStatus);
+                return response()->json(['data' => 'success'], $this->successStatus);
             else
-            return response()->json(['error' => 'Unauthorised'], 401);
-            }
-            else{
+                return response()->json(['error' => 'Unauthorised'], 401);
+        } else {
             return response()->json(['error' => 'Error'], 401);
-            }
-
-
-
-
-
+        }
     }
 
     public function delete($product_id)

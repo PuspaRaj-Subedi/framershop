@@ -19,9 +19,7 @@ class CreateProductsTable extends Migration
             $table->biginteger('price');
             $table->longText('description');
             $table->bigInteger('user_id');
-            $table->string('slug');
-            $table->string('product_id');
-            $table->tinyInteger('active')->default(1); //1=>active
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
